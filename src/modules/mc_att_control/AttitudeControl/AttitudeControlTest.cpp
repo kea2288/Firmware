@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2018 PX4 Development Team. All rights reserved.
+ *   Copyright (C) 2019 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,37 +31,14 @@
  *
  ****************************************************************************/
 
-/**
- * @file manifest.c
- *
- * This module supplies the interface to the manifest of hardware that is
- * optional and dependent on the HW REV and HW VER IDs
- *
- * The manifest allows the system to know whether a hardware option
- * say for example the PX4IO is an no-pop option vs it is broken.
- *
- */
+#include <gtest/gtest.h>
+#include <AttitudeControl.hpp>
 
-/****************************************************************************
- * Included Files
- ****************************************************************************/
+using namespace matrix;
 
-#include <nuttx/config.h>
-#include <board_config.h>
-
-#include <stdbool.h>
-#include "systemlib/px4_macros.h"
-
-/************************************************************************************
- * Name: board_rc_input
- *
- * Description:
- *   All boards my optionally provide this API to invert the Serial RC input.
- *   This is needed on SoCs that support the notion RXINV or TXINV as opposed to
- *   and external XOR controlled by a GPIO
- *
- ************************************************************************************/
-__EXPORT bool board_supports_single_wire(uint32_t uxart_base)
+TEST(AttitudeControlTest, AllZeroCase)
 {
-	return uxart_base == RC_UXART_BASE;
+	AttitudeControl attitude_control;
+	matrix::Vector3f rate_setpoint = attitude_control.update(Quatf(), Quatf(), 0.f);
+	EXPECT_EQ(rate_setpoint, Vector3f());
 }
